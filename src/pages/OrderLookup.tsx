@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Package, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { Search, Package, CheckCircle, XCircle, Loader2, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -41,6 +41,18 @@ const OrderLookup = () => {
   const [searchedOrder, setSearchedOrder] = useState<Order | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const getStatusStyles = (status: Order['status']) => {
+    if (status === 'APROVADO') {
+      return 'bg-green-100 text-green-700';
+    }
+
+    if (status === 'EM_ANALISE') {
+      return 'bg-ambar-100 text-ambar-700';
+    }
+
+    return 'bg-red-100 text-red-700';
+  };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,8 +97,9 @@ const OrderLookup = () => {
               <div>
                 <Label htmlFor="order-id">Número do Pedido</Label>
                 <Input
-                  type="text"
                   id="order-id"
+                  data-testid="search-order-id"
+                  type="text"
                   placeholder="Ex: VLO-ABC123"
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value)}
@@ -95,6 +108,7 @@ const OrderLookup = () => {
               </div>
               <Button
                 type="submit"
+                data-testid="search-order-button"
                 className="w-full"
                 disabled={!orderId.trim() || isLoading}
               >
@@ -131,28 +145,29 @@ const OrderLookup = () => {
 
         {/* Order Result */}
         {searchedOrder && (
-          <Card className="animate-fade-in">
+          <Card className="animate-fade-in" data-testid={`order-result-${searchedOrder.id}`}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Package className="w-5 h-5 text-muted-foreground" />
                   <div>
                     <p className="text-sm text-muted-foreground">Pedido</p>
-                    <p className="font-mono font-medium" >
+                    <p className="font-mono font-medium" data-testid="order-result-id">
                       {searchedOrder.id}
                     </p>
                   </div>
                 </div>
                 <div
-
+                  role="status"
+                  data-testid="order-result-status"
                   className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
-                    searchedOrder.status === 'APROVADO'
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-red-100 text-red-700'
+                    getStatusStyles(searchedOrder.status)
                   }`}
                 >
                   {searchedOrder.status === 'APROVADO' ? (
                     <CheckCircle className="w-4 h-4" />
+                  ) : searchedOrder.status === 'EM_ANALISE' ? (
+                    <Clock className="lucid-clock-icon w-4 h-4" />
                   ) : (
                     <XCircle className="w-4 h-4" />
                   )}
