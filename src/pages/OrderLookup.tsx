@@ -42,18 +42,6 @@ const OrderLookup = () => {
   const [notFound, setNotFound] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getStatusStyles = (status: Order['status']) => {
-    if (status === 'APROVADO') {
-      return 'bg-green-100 text-green-700';
-    }
-
-    if (status === 'EM_ANALISE') {
-      return 'bg-ambar-100 text-ambar-700';
-    }
-
-    return 'bg-red-100 text-red-700';
-  };
-
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setNotFound(false);
@@ -70,7 +58,7 @@ const OrderLookup = () => {
     }
     
     if (order) {
-      setSearchedOrder(order);
+      setSearchedOrder(order);      
     } else {
       setNotFound(true);
     }
@@ -97,10 +85,9 @@ const OrderLookup = () => {
               <div>
                 <Label htmlFor="order-id">Número do Pedido</Label>
                 <Input
-                  id="order-id"
-                  data-testid="search-order-id"
                   type="text"
-                  placeholder="Ex: VLO-ABC123"
+                  id="order-id"
+                  placeholder="Ex: VLO-ABCD10"
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value)}
                   className="mt-1"
@@ -108,7 +95,6 @@ const OrderLookup = () => {
               </div>
               <Button
                 type="submit"
-                data-testid="search-order-button"
                 className="w-full"
                 disabled={!orderId.trim() || isLoading}
               >
@@ -152,24 +138,27 @@ const OrderLookup = () => {
                   <Package className="w-5 h-5 text-muted-foreground" />
                   <div>
                     <p className="text-sm text-muted-foreground">Pedido</p>
-                    <p className="font-mono font-medium" data-testid="order-result-id">
+                    <p className="font-mono font-medium">
                       {searchedOrder.id}
                     </p>
                   </div>
                 </div>
                 <div
                   role="status"
-                  data-testid="order-result-status"
                   className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
-                    getStatusStyles(searchedOrder.status)
+                    searchedOrder.status === 'APROVADO'
+                      ? 'bg-green-100 text-green-700'
+                      : searchedOrder.status === 'REPROVADO'
+                        ? 'bg-red-100 text-red-700'
+                        : 'bg-amber-100 text-amber-700'
                   }`}
                 >
                   {searchedOrder.status === 'APROVADO' ? (
                     <CheckCircle className="w-4 h-4" />
-                  ) : searchedOrder.status === 'EM_ANALISE' ? (
-                    <Clock className="lucid-clock-icon w-4 h-4" />
-                  ) : (
+                  ) : searchedOrder.status === 'REPROVADO' ? (
                     <XCircle className="w-4 h-4" />
+                  ) : (
+                    <Clock className="w-4 h-4" />
                   )}
                   {searchedOrder.status}
                 </div>
