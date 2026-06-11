@@ -5,7 +5,7 @@ import { createConfiguratorActions } from './actions/configuratorActions'
 import { createOrderLookupActions } from './actions/orderLookupActions'
 import { createHeroActions } from './actions/heroActions'
 
-import { mockCreditAnalysis } from './mock.api'
+import { mockCreditAnalysis, mockGetOrder } from './mock.api'
 
 type App = {
   checkout: ReturnType<typeof createCheckoutActions>
@@ -14,6 +14,7 @@ type App = {
   hero: ReturnType<typeof createHeroActions>
   mock: {
     creditAnalysis: (score: number) => Promise<void>
+    getOrder: (order: any) => Promise<void>
   }
 }
 
@@ -26,6 +27,7 @@ export const test = base.extend<{ app: App }>({
       hero: createHeroActions(page),
       mock: {
         creditAnalysis: async (score: number) => await mockCreditAnalysis(page, score),
+        getOrder: async (order: any) => await mockGetOrder(page, order),
       }
     }
     await use(app)
