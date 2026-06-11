@@ -13,7 +13,7 @@ test.describe('Configuração do Veículo', () => {
     await app.configurator.expectCarImageSrc(/midnight-black-aero-wheels/)
   })
 
-  test('deve atualizar o preço e a imagem ao alterar as rodas, e restaurar os valores padrão', async ({ app }) => {
+  test('deve atualizar o preço e a imagem ao alterar as rodas', async ({ app }) => {
     await app.configurator.expectPrice('R$ 40.000,00')
 
     await app.configurator.selectWheels(/Sport Wheels/)
@@ -25,7 +25,7 @@ test.describe('Configuração do Veículo', () => {
     await app.configurator.expectCarImageSrc(/glacier-blue-aero-wheels/)
   })
 
-  test('deve atualizar o preço com opcionais e persistir no checkout', async ({ app }) => {
+  test('deve atualizar o preço com opcionais', async ({ app }) => {
     await app.configurator.expectPrice('R$ 40.000,00')
 
     await app.configurator.checkOptional(/Precision Park/i)
